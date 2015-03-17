@@ -1,41 +1,77 @@
 package fr.esgi.demo;
 
-import org.hamcrest.MatcherAssert;
+import fr.esgi.demo.Exceptions.CreditNotAuthorizedException;
+import fr.esgi.demo.Exceptions.NotAuthorizedException;
+import fr.esgi.demo.Services.IAuthorizationService;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
-/**
- * Created by hugo on 16/03/2015.
- */
+@RunWith(MockitoJUnitRunner.class)
 public class BankingServiceTest {
 
     private BankService bankService = new BankService();
-    private Account account = new Account();
+
+    @Mock
+    private IAuthorizationService authorizationService;
+    @Spy
+    private Account account;
+
+
+    @Before
+    public void setUp() {
+        account.setBlocked(false);
+        when(authorizationService.isAuthorized(account)).thenReturn(true);
+        // this line is the same as the one just before, the syntax is inverted
+//        doReturn(true).when(authorizationService.isAuthorized((any(Account.class))));
+        bankService.setIAuthorizationService(authorizationService);
+    }
 
     @Test
     public void should_AddMoneyToAccount_Nominal() {
-        //Given
-        account.setMoney(0);
-
-        //When
         account = bankService.pushMoney(account, 1000);
 
-        //Then
         assertThat(account.getMoney(), is(1000));
+        verify(account, times(1)).setMoney(anyInt());
     }
 
     @Test
     public void should_RemoveMoneyToAccount_Nominal() {
-        //Given
         account.setMoney(1000);
 
-        //When
         account = bankService.pushMoney(account, -1000);
 
-        //Then
         assertThat(account.getMoney(), is(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNot_AddMoney_WhenAccountIsNull() {
+        Account account = null;
+
+        account = bankService.pushMoney(account, 1000);
+    }
+
+    @Test(expected = CreditNotAuthorizedException.class)
+    public void shouldNot_RemoveMoney_WhenAccountUnderZero() {
+        account.setMoney(0);
+
+        account = bankService.pushMoney(account, -1000);
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void shouldNot_AddMoney_WhenAccountIsBlocked() {
+        account.setBlocked(true);
+        when(authorizationService.isAuthorized(account)).thenReturn(false);
+
+        bankService.pushMoney(account, 1000);
     }
 
 }

@@ -12,6 +12,7 @@ public class Account {
     public Account(int money) {
         super();
         this.money = money;
+        this.blocked = false;
     }
 
     // simple one
