@@ -1,9 +1,8 @@
 package fr.esgi.demo.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import static javax.persistence.EnumType.*;
 
 @Entity
 public class User {
@@ -14,7 +13,7 @@ public class User {
     private String password;
     @Column
     private String login;
-    @Column
+    @Enumerated(STRING)
     private Role role;
 
     public User() {
