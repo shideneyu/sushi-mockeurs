@@ -1,11 +1,12 @@
 package fr.esgi.demo;
 
-import fr.esgi.demo.Exceptions.CreditNotAuthorizedException;
-import fr.esgi.demo.Exceptions.NotAuthorizedException;
-import fr.esgi.demo.Services.IAuthorizationService;
+import fr.esgi.demo.exceptions.CreditNotAuthorizedException;
+import fr.esgi.demo.exceptions.NotAuthorizedException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -19,12 +20,12 @@ import static org.mockito.Mockito.*;
 public class BankingServiceTest {
 
     private BankService bankService = new BankService();
-
     @Mock
     private IAuthorizationService authorizationService;
     @Spy
     private Account account;
-
+    @Captor
+    private ArgumentCaptor<Integer> amountCaptor;
 
     @Before
     public void setUp() {
@@ -45,11 +46,13 @@ public class BankingServiceTest {
 
     @Test
     public void should_RemoveMoneyToAccount_Nominal() {
-        account.setMoney(1000);
+//        account.setMoney(1000);
+        when(account.getMoney()).thenReturn(1000);
 
         account = bankService.pushMoney(account, -1000);
 
-        assertThat(account.getMoney(), is(0));
+        verify(account, times(1)).setMoney(amountCaptor.capture());
+        assertThat(amountCaptor.getValue(), is(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
