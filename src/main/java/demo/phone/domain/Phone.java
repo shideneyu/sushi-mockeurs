@@ -1,24 +1,31 @@
-package demo.phone.dto;
+package demo.phone.domain;
 
-import com.google.common.base.Function;
-import demo.phone.domain.Phone;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-import java.util.List;
-
-import static com.google.common.collect.FluentIterable.from;
-
-public class PhoneDTO {
-
+@Entity
+public class Phone {
+    @Id
+    @GeneratedValue
     private long id;
+    @Column(unique = true, nullable = false)
     private String serialNumber;
+    @Column(unique = true, nullable = false)
     private String number;
+    @Column
     private String firstName;
+    @Column
     private String lastName;
+    @Column(nullable = false)
     private boolean stolen;
+
+    public Phone() {}
 
     @Override
     public String toString() {
-        return "PhoneDTO{" +
+        return "Phone{" +
                 "id=" + id +
                 ", serialNumber='" + serialNumber + '\'' +
                 ", number='" + number + '\'' +
@@ -28,9 +35,16 @@ public class PhoneDTO {
                 '}';
     }
 
-    public PhoneDTO() {}
+    public Phone(String serialNumber, String number, String firstName, String lastName, boolean stolen) {
+        this.serialNumber = serialNumber;
+        this.number = number;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.stolen = stolen;
+    }
 
-    private PhoneDTO(Builder builder) {
+    public Phone(Builder builder) {
+        setId(builder.id);
         setSerialNumber(builder.serialNumber);
         setNumber(builder.number);
         setFirstName(builder.firstName);
@@ -41,7 +55,6 @@ public class PhoneDTO {
     public static Builder newBuilder(String serialNumber, String number, boolean stolen) {
         return new Builder(serialNumber, number, stolen);
     }
-
 
     public long getId() {
         return id;
@@ -93,6 +106,7 @@ public class PhoneDTO {
 
 
     public static final class Builder {
+        private long id;
         private final String serialNumber;
         private final String number;
         private String firstName;
@@ -115,34 +129,8 @@ public class PhoneDTO {
             return this;
         }
 
-        public PhoneDTO build() {
-            return new PhoneDTO(this);
+        public Phone build() {
+            return new Phone(this);
         }
-
-    }
-
-    public Phone toPhone(){
-        return new Phone(serialNumber,number, firstName,lastName,stolen);
-
-    }
-
-    public PhoneDTO(Phone phone){
-        id = phone.getId();
-        serialNumber = phone.getSerialNumber();
-        number = phone.getNumber();
-        firstName = phone.getFirstName();
-        lastName = phone.getLastName();
-        stolen = phone.isStolen();
-
-    }
-
-    public static List<PhoneDTO> toPhoneList(List<Phone> phoneList){
-        return from(phoneList).transform(new Function<Phone, PhoneDTO>() {
-            @Override
-            public PhoneDTO apply(Phone phone) {
-                return new PhoneDTO(phone);
-            }
-
-        }).toList();
     }
 }
