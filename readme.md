@@ -1,4 +1,4 @@
-# Morpy
+# Sushi-mockeurs
 
 Sushi-mockeurs is a **Java J2EE** Application that runs on top of **Spring** and **Maven**.
 
