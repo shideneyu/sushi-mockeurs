@@ -22,10 +22,11 @@ $ mvn test
 * Users are showed anonymously
 * A basic graphical interface is runing based on the API
 * Exceptions for errors
-* Tests depends (and run) Spring (P.S. : all tests are made to avoid corrupting the DB as much as possible)
+* Tests depends (and run) Spring
 * Some datas are insterted after Spring's startup
 
 ## Tests
+All tests are made to avoid corrupting the DB as much as possible
 
 * Get one phone
 * Get all the phones
