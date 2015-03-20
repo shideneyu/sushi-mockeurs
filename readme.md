@@ -16,6 +16,24 @@ To run the specs:
 $ mvn test
 ```
 
+## What is working ?
+
+* GET (one or all), POST and PUT requests work using the REST conventions
+* Users are showed anonymously
+* A basic graphical interface is runing based on the API
+* Exceptions for errors
+* Tests depends (and run) Spring (P.S. : all tests are made to avoid corrupting the DB as much as possible)
+* Some datas are insterted after Spring's startup
+
+## Tests
+
+* Get one phone
+* Get all the phones
+* Add a phone
+* Change the stolen state of a phone
+* Get one phone with a wrong identifier
+ 
+
 ## Contributing
 
 1. Fork it ( https://github.com/shideneyu/sushi-mockeurs/fork )
